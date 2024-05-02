@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudify UR Mind</title>
+    <link rel="icon" href="Cloudify UR Mind Icon.drawio.png" type="image/png">
+    <style>
+        body {
+            background-color: darkslateblue;
+            color: white;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .title-with-icon {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+        }
+        .title-icon {
+            margin-right: 10px;
+            width: 50px;
+            height: auto;
+        }
+        #searchForm {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        #searchInput {
+            width: 300px;
+            padding: 10px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        #searchButton {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title-with-icon">
+        <h1>Cloudify UR Mind</h1>
+        <img src="Cloudify UR Mind Icon.drawio.png" alt="Icon" class="title-icon">
+    </div>
+    <div> 
+        <h2>This is a dictionary of cloud terms. Search any cloud term you want and the definition will be given.</h2>
+    </div>
+
+    <div id="searchForm">
+        <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Enter your search query...">
+            <button type="submit" id="searchButton">Search</button>
+        </form>
+    </div>
+    <div id="results"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const form = document.getElementById('searchForm');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // prevent default form submission behavior
+
+                const searchTerm = document.getElementById('searchInput').value.trim();
+                // reprompt user to enter a search term if none was provided
+                if (searchTerm === ''){
+                    alert('Please enter a search term.');
+                    return;
+                }
+                // get URL for backend API (replace placeholderurl with actual URL)
+                const apiUrl = `https://placeholderurl.com/search?term=${encodeURIComponent(searchTerm)}`;
+
+                // make the HTTP GET request
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        // display the search results
+                        displaySearchResults(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        alert('An error occurred while fetching data. Please try again later.');
+                    });
+            });
+
+            function displaySearchResults(data){
+                const resultsContainer = document.getElementById('results');
+                resultsContainer.innerHTML = ''; // Clear previous search results
+
+                if (data && data.length > 0){
+                    data.forEach(item => {
+                        const resultElement = document.createElement('div');
+                        // This will pick out the word and definition
+                        resultElement.innerHTML = `<strong>${item.word}</strong>: ${item.definition}`;
+                        resultsContainer.appendChild(resultElement); // Append each result to the results container
+                    });
+                } else {
+                    resultsContainer.textContent = 'No results found.'; // Display a message if no results are returned
+                }
+            }
+        });
+    </script>
+</body>
+</html>
